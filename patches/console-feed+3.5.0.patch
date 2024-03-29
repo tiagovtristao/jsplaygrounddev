@@ -1,0 +1,29 @@
+diff --git a/node_modules/console-feed/lib/Hook/index.js b/node_modules/console-feed/lib/Hook/index.js
+index f6fad8d..8eb3319 100644
+--- a/node_modules/console-feed/lib/Hook/index.js
++++ b/node_modules/console-feed/lib/Hook/index.js
+@@ -30,17 +30,14 @@ function Hook(console, callback, encode, limit) {
+             NativeMethod.apply(this, arguments);
+             // Parse arguments and send to transport
+             var args = [].slice.call(arguments);
+-            // setTimeout to prevent lag
+-            setTimeout(function () {
+-                var parsed = parse_1["default"](method, args);
+-                if (parsed) {
+-                    var encoded = parsed;
+-                    if (encode) {
+-                        encoded = Transform_1.Encode(parsed, limit);
+-                    }
+-                    callback(encoded, parsed);
++            var parsed = parse_1["default"](method, args);
++            if (parsed) {
++                var encoded = parsed;
++                if (encode) {
++                    encoded = Transform_1.Encode(parsed, limit);
+                 }
+-            });
++                callback(encoded, parsed);
++            }
+         };
+         // Store native methods
+         Storage.pointers[method] = NativeMethod;

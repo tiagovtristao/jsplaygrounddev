@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="32" width="32">
+  <defs>
+    <linearGradient id="grad">
+      <stop offset="0%" stop-color="#2fafff" />
+      <stop offset="50%" stop-color="#2fafff" />
+      <stop offset="100%" stop-color="#00ecbc" />
+    </linearGradient>
+  </defs>
+  <path fill="url(#grad)" fill-rule="evenodd" clip-rule="evenodd" d="M6 15.2348L12 18.5681L18 15.2348V8.76521L12 5.43188L6 8.76521V15.2348ZM12 2L3 7V17L12 22L21 17V7L12 2Z"></path>
+</svg>
