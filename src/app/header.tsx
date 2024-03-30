@@ -2,7 +2,11 @@ import cn from 'classnames';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useContext } from 'react';
-import { AiOutlineFullscreen, AiOutlineFullscreenExit } from 'react-icons/ai';
+import {
+  AiOutlineFullscreen,
+  AiOutlineFullscreenExit,
+  AiOutlineGithub,
+} from 'react-icons/ai';
 import { MdDarkMode, MdLightMode } from 'react-icons/md';
 
 import Button from '../components/button';
@@ -96,6 +100,14 @@ export default function Header() {
             }
           />
         </SSR>
+
+        <a
+          href="https://github.com/tiagovtristao/jsplaygrounddev"
+          target="_blank"
+          aria-label="GitHub account"
+        >
+          <AiOutlineGithub className="text-xl text-[#5f5f5f] dark:text-white" />
+        </a>
 
         <a
           className="text-[#5f5f5f] dark:text-white"
