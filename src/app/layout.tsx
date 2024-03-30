@@ -5,10 +5,13 @@ import { type Metadata, type Viewport } from 'next';
 import themeInitializer from './theme-initializer';
 import './globals.css';
 
+const title = 'JSPlayground.dev';
+const description = 'A no-fuss JavaScript playground with instant feedback';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.jsplayground.dev'),
-  title: 'JSPlayground.dev',
-  description: 'A no-fuss JavaScript playground with instant feedback',
+  title: `${title} — ${description}`,
+  description,
   keywords: [
     'js',
     'javascript',
@@ -21,17 +24,17 @@ export const metadata: Metadata = {
   },
   icons: '/logo.svg',
   openGraph: {
-    title: 'JSPlayground.dev',
-    description: 'A no-fuss JavaScript playground with instant feedback',
+    title,
+    description,
     url: '/',
-    siteName: 'JSPlayground.dev',
+    siteName: title,
     type: 'website',
     images: '',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JSPlayground.dev',
-    description: 'A no-fuss JavaScript playground with instant feedback',
+    title,
+    description,
     images: '/social-1024x512.png',
   },
 };
