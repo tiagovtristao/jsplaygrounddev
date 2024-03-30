@@ -6,7 +6,7 @@ export default function NotFound() {
       <p>
         Page not found. Go to{' '}
         <Link className="text-[#0076cf] hover:underline" href="/">
-          JavaScript Playground
+          JSPlayground.dev
         </Link>
         .
       </p>

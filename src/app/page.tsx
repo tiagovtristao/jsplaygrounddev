@@ -60,7 +60,7 @@ export default function HomePage() {
                     'dark:from-[#00ecbc] dark:to-[#2fafff]',
                   )}
                 >
-                  JavaScript Playground
+                  JSPlayground.dev
                 </h1>
                 <h2 className="mt-2 tracking-wide text-[#4d4d4d] dark:text-white">
                   A no-fuss JavaScript playground with instant feedback.

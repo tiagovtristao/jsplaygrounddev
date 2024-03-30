@@ -7,7 +7,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.jsplayground.dev'),
-  title: 'JavaScript Playground',
+  title: 'JSPlayground.dev',
   description: 'A no-fuss JavaScript playground with instant feedback',
   keywords: [
     'js',
@@ -21,16 +21,16 @@ export const metadata: Metadata = {
   },
   icons: '/logo.svg',
   openGraph: {
-    title: 'JavaScript Playground',
+    title: 'JSPlayground.dev',
     description: 'A no-fuss JavaScript playground with instant feedback',
     url: '/',
-    siteName: 'JavaScript Playground',
+    siteName: 'JSPlayground.dev',
     type: 'website',
     images: '',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JavaScript Playground',
+    title: 'JSPlayground.dev',
     description: 'A no-fuss JavaScript playground with instant feedback',
     images: '/social-1024x512.png',
   },
