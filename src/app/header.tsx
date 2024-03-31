@@ -31,7 +31,7 @@ export default function Header() {
     <header className="px-4 h-14 flex items-center">
       <div className="flex-one flex">
         <Link href="/">
-          <Image alt="JSPlayground.dev logo" src={LogoSVG} />
+          <Image alt="JSPlayground.dev logo" src={LogoSVG} priority />
         </Link>
       </div>
 
