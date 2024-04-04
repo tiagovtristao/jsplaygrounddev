@@ -5,7 +5,7 @@ import { type Metadata, type Viewport } from 'next';
 import themeInitializer from './theme-initializer';
 import './globals.css';
 
-const title = 'JSPlayground.dev';
+const title = 'JS Playground';
 const description = 'A no-fuss JavaScript playground with instant feedback';
 
 export const metadata: Metadata = {
