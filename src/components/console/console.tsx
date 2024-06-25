@@ -67,10 +67,27 @@ export default function Console({ className, theme = 'dark', iframe }: Props) {
     );
   };
 
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      // Control + L to clear console
+      if (e.ctrlKey && e.key === 'l') {
+        e.preventDefault();
+        setLogs([]);
+      }
+    };
+
+    window.addEventListener('keydown', listener);
+
+    return () => {
+      window.removeEventListener('keydown', listener);
+    };
+  }, []);
+
   return (
     <div className={cn(className, 'flex flex-col')}>
       <div className="px-2 flex justify-end">
         <Button
+          title="Clear console (Ctrl + L)"
           className="m-1 rounded text-xs text-[#0076cf] hover:underline dark:text-[#2fafff]"
           onClick={() => setLogs([])}
         >

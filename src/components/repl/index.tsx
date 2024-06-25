@@ -6,13 +6,15 @@ import cn from 'classnames';
 import {
   createContext,
   useContext,
-  useState,
   useRef,
   useEffect,
   useMemo,
   useReducer,
 } from 'react';
 import { AiOutlineSync } from 'react-icons/ai';
+import { FiCode } from 'react-icons/fi';
+import { AiOutlineClear } from 'react-icons/ai';
+import { FiTrash2 } from 'react-icons/fi';
 import { FiPlay } from 'react-icons/fi';
 
 import Button from '../button';
@@ -25,6 +27,13 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from '../tabs';
 
 import { defaultHTML, defaultCSS, defaultJS } from './constants';
 import jsValidator from './js-validator';
+import useCallbackState from '../../hooks/useCallbackState';
+import * as prettier from 'prettier';
+import * as parserHTML from 'prettier/parser-html';
+import * as parserCSS from 'prettier/parser-postcss';
+import * as parserJS from 'prettier/parser-babel';
+import * as babelPlugin from 'prettier/plugins/babel';
+import * as estreePlugin from 'prettier/plugins/estree';
 
 export interface REPLContext {
   theme: 'light' | 'dark';
@@ -88,6 +97,15 @@ export default function REPL({ container }: Props) {
   const { theme, playground, maximizeREPL, autoRun, setAutoRun } =
     useContext(REPLContext)!;
   const [tabs, dispatch] = useReducer(reducer, playgrounds[playground]);
+  const [html, setHTML] = useCallbackState<string>('');
+  const [css, setCSS] = useCallbackState<string>('');
+  const [js, setJS] = useCallbackState<string>('');
+
+  useEffect(() => {
+    setHTML(localStorage.getItem('html') || '');
+    setCSS(localStorage.getItem('css') || '');
+    setJS(localStorage.getItem('js') || '');
+  }, []);
 
   useEffect(() => {
     dispatch({
@@ -103,14 +121,90 @@ export default function REPL({ container }: Props) {
     [],
   );
 
-  const [html, setHTML] = useState<string>('');
-  const [css, setCSS] = useState<string>('');
-  const [js, setJS] = useState<string>('');
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      // Control + Enter to run
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        outputRef.current!.reload();
+      }
+      // Alt + A to toggle auto-run
+      if (e.altKey && e.key === 'a') {
+        e.preventDefault();
+        setAutoRun((value) => !value);
+      }
+
+      // Alt + L to clear code
+      if (e.altKey && e.key === 'l') {
+        e.preventDefault();
+        setAndSave('html', '');
+        setAndSave('css', '');
+        setAndSave('js', '');
+      }
+    };
+
+    window.addEventListener('keydown', listener);
+
+    return () => {
+      window.removeEventListener('keydown', listener);
+    };
+  }, []);
+
+  const formatJS = async (updateCursorPosition?: () => void) => {
+    const formattedJS = await prettier.format(js, {
+      parser: 'babel',
+      plugins: [babelPlugin, estreePlugin, parserJS],
+    });
+    setJS(formattedJS, () => updateCursorPosition?.());
+    setAndSave('js', formattedJS);
+  };
+
+  const formatHTML = async (updateCursorPosition?: () => void) => {
+    const formattedHTML = await prettier.format(html, {
+      parser: 'html',
+      plugins: [parserHTML],
+    });
+    setHTML(formattedHTML, () => updateCursorPosition?.());
+    setAndSave('html', formattedHTML);
+  };
+
+  const formatCSS = async (updateCursorPosition?: () => void) => {
+    const formattedCSS = await prettier.format(css, {
+      parser: 'css',
+      plugins: [parserCSS],
+    });
+    setCSS(formattedCSS, () => updateCursorPosition?.());
+    setAndSave('css', formattedCSS);
+  };
+
+  const setAndSave = (key: 'html' | 'css' | 'js', value: string) => {
+    localStorage.setItem(key, value);
+    switch (key) {
+      case 'html':
+        setHTML(value);
+        break;
+      case 'css':
+        setCSS(value);
+        break;
+      case 'js':
+        setJS(value);
+        break;
+    }
+  };
 
   const content = useMemo(() => {
     if (!html && !css && !js) {
-      return { html: defaultHTML, css: defaultCSS, js: defaultJS };
+      const html = localStorage.getItem('html');
+      const css = localStorage.getItem('css');
+      const js = localStorage.getItem('js');
+
+      return {
+        html: html || defaultHTML,
+        css: css || defaultCSS,
+        js: (js && jsValidator(js)) || defaultJS,
+      };
     }
+
     return { html, css, js: jsValidator(js) };
   }, [html, css, js]);
 
@@ -149,7 +243,31 @@ export default function REPL({ container }: Props) {
                 right={
                   <>
                     <Button
-                      title={autoRun ? 'Disable auto-run' : 'Enable auto-run'}
+                      title="Clear Code (Alt + L)"
+                      as={AiOutlineClear}
+                      className="text-xl text-[#0076cf] dark:text-[#2fafff]"
+                      onClick={() => {
+                        setAndSave('html', '');
+                        setAndSave('css', '');
+                        setAndSave('js', '');
+                      }}
+                    />
+                    <Button
+                      title="Format Code (Alt + Shift + F)"
+                      as={FiCode}
+                      className="text-xl text-[#0076cf] dark:text-[#2fafff]"
+                      onClick={() => {
+                        formatHTML();
+                        formatCSS();
+                        formatJS();
+                      }}
+                    />
+                    <Button
+                      title={
+                        autoRun
+                          ? 'Disable auto-run (Alt + A)'
+                          : 'Enable auto-run (Alt + A)'
+                      }
                       as={AiOutlineSync}
                       className={cn('text-xl', {
                         'text-[#0076cf] dark:text-[#2fafff]': autoRun,
@@ -158,7 +276,9 @@ export default function REPL({ container }: Props) {
                       onClick={() => setAutoRun((value) => !value)}
                     />
                     <Button
-                      title={autoRun ? 'Re-run' : 'Run'}
+                      title={
+                        autoRun ? 'Re-run (Ctrl + Enter)' : 'Run (Ctrl + Enter)'
+                      }
                       as={FiPlay}
                       className="text-xl text-[#0076cf] dark:text-[#2fafff]"
                       onClick={() => outputRef.current!.reload()}
@@ -181,25 +301,30 @@ export default function REPL({ container }: Props) {
                   <CodeMirrorWrapper
                     className="flex-one w-full"
                     theme={theme}
+                    formatCode={formatHTML}
                     extensions={[cmHTML()]}
                     value={html}
-                    onChange={(value) => setHTML(value)}
+                    onChange={(value) => setAndSave('html', value)}
                   />
                 </TabPanel>
                 <TabPanel id="css">
                   <CodeMirrorWrapper
                     className="flex-one w-full"
                     theme={theme}
+                    formatCode={formatCSS}
                     extensions={[cmCSS()]}
-                    onChange={(value) => setCSS(value)}
+                    value={css}
+                    onChange={(value) => setAndSave('css', value)}
                   />
                 </TabPanel>
                 <TabPanel id="js">
                   <CodeMirrorWrapper
                     className="flex-one w-full"
                     theme={theme}
+                    formatCode={formatJS}
                     extensions={[cmJS()]}
-                    onChange={(value) => setJS(value)}
+                    value={js}
+                    onChange={(value) => setAndSave('js', value)}
                   />
                 </TabPanel>
               </TabPanels>
