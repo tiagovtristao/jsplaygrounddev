@@ -13,7 +13,7 @@ import {
   useReducer,
 } from 'react';
 import { AiOutlineSync } from 'react-icons/ai';
-import { FiPlay } from 'react-icons/fi';
+import { FiDownload, FiPlay } from 'react-icons/fi';
 
 import Button from '../button';
 import CodeMirrorWrapper from '../codemirror-wrapper';
@@ -25,6 +25,7 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from '../tabs';
 
 import { defaultHTML, defaultCSS, defaultJS } from './constants';
 import jsValidator from './js-validator';
+import { exportContent } from './exportContent';
 
 export interface REPLContext {
   theme: 'light' | 'dark';
@@ -148,6 +149,12 @@ export default function REPL({ container }: Props) {
                 className="border-b border-[#cccccc] dark:border-[#30363d]"
                 right={
                   <>
+                    <Button
+                      title="Export"
+                      as={FiDownload}
+                      className="text-white text-xl"
+                      onClick={() => exportContent(content)}
+                    />
                     <Button
                       title={autoRun ? 'Disable auto-run' : 'Enable auto-run'}
                       as={AiOutlineSync}
