@@ -152,7 +152,7 @@ export default function REPL({ container }: Props) {
                     <Button
                       title="Export"
                       as={FiDownload}
-                      className="text-white text-xl"
+                      className="text-xl text-[#0076cf] dark:text-[#2fafff]"
                       onClick={() => exportContent(content)}
                     />
                     <Button
