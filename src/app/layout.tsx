@@ -53,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html className="h-full min-h-full" lang="en" suppressHydrationWarning>
-      <body className="h-full child-[*]:h-full">
+      <body className="h-full">
         <script
           dangerouslySetInnerHTML={{
             __html: `(${themeInitializer.toString()})()`,
