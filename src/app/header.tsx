@@ -13,7 +13,6 @@ import Button from '../components/button';
 import { REPLContext } from '../components/repl';
 import SSR from '../components/ssr';
 import useTailwindBreakpoint from '../hooks/useTailwindBreakpoint';
-import X from '../icons/x';
 import LogoSVG from '../../public/logo.svg';
 
 export default function Header() {
@@ -107,15 +106,6 @@ export default function Header() {
           aria-label="GitHub account"
         >
           <AiOutlineGithub className="text-xl text-[#5f5f5f] dark:text-white" />
-        </a>
-
-        <a
-          className="text-[#5f5f5f] dark:text-white"
-          href="https://twitter.com/jsplaygrounddev"
-          target="_blank"
-          aria-label="X (formerly Twitter) account"
-        >
-          <X className="text-[#5f5f5f] dark:text-white" />
         </a>
       </div>
     </header>
