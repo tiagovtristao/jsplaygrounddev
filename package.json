@@ -2,9 +2,6 @@
   "name": "jsplaygrounddev",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "20"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -25,6 +22,7 @@
     "@next/third-parties": "^14.1.4",
     "@types/babel__generator": "^7.6.8",
     "@types/babel__traverse": "^7.20.5",
+    "@uidotdev/usehooks": "^2.4.1",
     "@uiw/codemirror-theme-github": "^4.21.25",
     "@uiw/react-codemirror": "^4.21.25",
     "classnames": "^2.5.1",

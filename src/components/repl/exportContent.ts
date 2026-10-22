@@ -3,10 +3,10 @@ import JSZip from 'jszip';
 interface ExportContentProps {
   css: string;
   html: string;
-  js: string;
+  webJs: string;
 }
 
-export const exportContent = ({ css, html, js }: ExportContentProps) => {
+export const exportContent = ({ css, html, webJs: js }: ExportContentProps) => {
   const zip = new JSZip();
 
   const htmlContent = `

@@ -4,7 +4,9 @@ import {
   forwardRef,
   useImperativeHandle,
   useRef,
+  useContext,
 } from 'react';
+import { REPLContext } from '../repl';
 
 export interface IFrameHandle {
   element: HTMLIFrameElement | null;
@@ -20,6 +22,7 @@ interface Props {
     html: string;
     css: string;
     js: string;
+    webJs: string;
   };
   preScript?: string;
   disabled?: boolean;
@@ -32,7 +35,7 @@ const IFrame = forwardRef<IFrameHandle, Props>(
       width = 'auto',
       height = 'auto',
       title,
-      content: { html, css, js },
+      content: { html, css, js, webJs },
       preScript,
       disabled = false,
     },
@@ -42,18 +45,25 @@ const IFrame = forwardRef<IFrameHandle, Props>(
     const [objectURL, setObjectURL] = useState('');
     const previousObjectURLRef = useRef<string | null>(null);
 
+    const { playground } = useContext(REPLContext)!;
+
     useEffect(() => {
       if (!disabled) {
-        const document = renderDocument(html, css, js, {
-          preScript,
-        });
+        const document = renderDocument(
+          html,
+          css,
+          playground === 'web' ? webJs : js,
+          {
+            preScript,
+          },
+        );
         const url = URL.createObjectURL(
           new Blob([document], { type: 'text/html' }),
         );
 
         setObjectURL(url);
       }
-    }, [disabled, html, css, js, preScript, setObjectURL]);
+    }, [disabled, html, css, js, webJs, preScript, playground, setObjectURL]);
 
     useEffect(() => {
       if (previousObjectURLRef.current) {

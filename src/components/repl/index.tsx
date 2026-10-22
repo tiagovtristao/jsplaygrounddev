@@ -1,6 +1,7 @@
 import { css as cmCSS } from '@codemirror/lang-css';
 import { html as cmHTML } from '@codemirror/lang-html';
 import { javascript as cmJS } from '@codemirror/lang-javascript';
+import { useThrottle } from '@uidotdev/usehooks';
 
 import cn from 'classnames';
 import {
@@ -104,16 +105,42 @@ export default function REPL({ container }: Props) {
     [],
   );
 
-  const [html, setHTML] = useState<string>('');
-  const [css, setCSS] = useState<string>('');
-  const [js, setJS] = useState<string>('');
+  const [html, setHTML] = useState<string>(localStorage.getItem('html') ?? '');
+  const [css, setCSS] = useState<string>(localStorage.getItem('css') ?? '');
+  const [webJs, setWebJS] = useState<string>(
+    localStorage.getItem('webjs') ?? '',
+  );
+  const [js, setJS] = useState<string>(localStorage.getItem('js') ?? '');
+
+  const delayHTML = useThrottle(html, 500);
+  const delayCSS = useThrottle(css, 500);
+  const delayWebJS = useThrottle(webJs, 500);
+  const delayJS = useThrottle(js, 500);
+
+  useEffect(() => {
+    localStorage.setItem('html', delayHTML);
+  }, [delayHTML]);
+  useEffect(() => {
+    localStorage.setItem('css', delayCSS);
+  }, [delayCSS]);
+  useEffect(() => {
+    localStorage.setItem('webjs', delayWebJS);
+  }, [delayWebJS]);
+  useEffect(() => {
+    localStorage.setItem('js', delayJS);
+  }, [delayJS]);
 
   const content = useMemo(() => {
-    if (!html && !css && !js) {
-      return { html: defaultHTML, css: defaultCSS, js: defaultJS };
+    if (!html && !css && !webJs && !js) {
+      return {
+        html: defaultHTML,
+        css: defaultCSS,
+        webJs: defaultJS,
+        js: defaultJS,
+      };
     }
-    return { html, css, js: jsValidator(js) };
-  }, [html, css, js]);
+    return { html, css, webJs: jsValidator(webJs), js: jsValidator(js) };
+  }, [html, css, webJs, js]);
 
   return (
     <ResizableChildContainer
@@ -198,6 +225,7 @@ export default function REPL({ container }: Props) {
                     className="flex-one w-full"
                     theme={theme}
                     extensions={[cmCSS()]}
+                    value={css}
                     onChange={(value) => setCSS(value)}
                   />
                 </TabPanel>
@@ -205,8 +233,11 @@ export default function REPL({ container }: Props) {
                   <CodeMirrorWrapper
                     className="flex-one w-full"
                     theme={theme}
+                    value={playground === 'web' ? webJs : js}
                     extensions={[cmJS()]}
-                    onChange={(value) => setJS(value)}
+                    onChange={(value) =>
+                      playground === 'web' ? setWebJS(value) : setJS(value)
+                    }
                   />
                 </TabPanel>
               </TabPanels>

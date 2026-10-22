@@ -1,13 +1,14 @@
 import cn from 'classnames';
 import { Console as ConsoleFeed, Hook, Decode, Encode } from 'console-feed';
 import { type Message } from 'console-feed/lib/definitions/Component';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 
 import Button from '../button';
 
 import { ConsoleFeedGlobalVariables } from './constants';
 import Prompt from './prompt';
 import { type ConsoleMessageEventData } from './types';
+import { REPLContext } from '../repl';
 
 interface Props {
   className?: string;
@@ -18,6 +19,12 @@ interface Props {
 export default function Console({ className, theme = 'dark', iframe }: Props) {
   const [logs, setLogs] = useState<Message[]>([]);
   const consoleContainerRef = useRef<HTMLDivElement>(null);
+
+  const { playground } = useContext(REPLContext)!;
+
+  useEffect(() => {
+    setLogs([]);
+  }, [playground]);
 
   useEffect(() => {
     const listener = (
